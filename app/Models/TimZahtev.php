@@ -18,7 +18,7 @@ class TimZahtev extends Model
     {
         return $this->belongsTo(TimKorisnik::class);
     }
-    
+
     public function tim()
     {
         return $this->belongsTo(Tim::class);
@@ -27,5 +27,13 @@ class TimZahtev extends Model
     public function korisnik()
     {
         return $this->belongsTo(Korisnik::class);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'datetime:d.m.Y H:i:s',
+            'updated_at' => 'datetime:d.m.Y H:i:s',
+        ];
     }
 }
