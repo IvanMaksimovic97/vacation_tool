@@ -22,7 +22,18 @@ class TimController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'naziv' => 'required',
+        ], [
+            'naziv.required' => 'Polje naziv je obavezno'
+        ]);
+
+        $tim = new Tim;
+        $tim->naziv = $request->naziv;
+        $tim->opis = $request->opis ?? '';
+        $tim->save();
+
+        return response()->json(['poruka' => 'Tim je uspešno kreiran']);
     }
 
     /**
@@ -36,16 +47,31 @@ class TimController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Tim $tim)
+    public function update(Request $request, $id)
     {
-        //
+        $tim = Tim::findOrFail($id);
+
+        if ($request->naziv) {
+            $tim->naziv = $request->naziv;
+        }
+        
+        if ($request->opis) {
+            $tim->opis = $request->opis;
+        }
+        
+        $tim->save();
+
+        return response()->json(['poruka' => 'Tim je uspešno izmenjen']);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Tim $tim)
+    public function destroy($id)
     {
-        //
+        $tim = Tim::findOrFail($id);
+        $tim->delete();
+
+        return response()->json(['poruka' => 'Tim je uspesno obrisan!']);
     }
 }
