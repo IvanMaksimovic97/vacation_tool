@@ -12,7 +12,7 @@ class TimController extends Controller
      */
     public function index()
     {
-        $korisnici = Tim::all();
+        $korisnici = Tim::with(['korisnici.korisnik.uloga'])->get();
 
         return response()->json($korisnici);
     }
