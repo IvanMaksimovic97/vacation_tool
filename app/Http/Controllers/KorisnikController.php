@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\KorisnikValidationStoreRequest;
+use App\Http\Requests\KorisnikValidationUpdateRequest;
 use App\Models\Korisnik;
+use App\Rules\EmailCheck;
+use App\Rules\UlogaCheck;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class KorisnikController extends Controller
 {
@@ -20,9 +25,19 @@ class KorisnikController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(KorisnikValidationStoreRequest $request)
     {
-        //
+        $korisnik = new Korisnik;
+        $korisnik->uloga_id = $request->uloga_id;
+        $korisnik->ime = $request->ime;
+        $korisnik->prezime = $request->prezime;
+        $korisnik->email = $request->email;
+        $korisnik->password = Hash::make($request->password);
+        $korisnik->broj_dana_godisnjeg_odmora = 20;
+        $korisnik->broj_slobodnih_dana = 5;
+        $korisnik->save();
+
+        return response()->json(['poruka' => 'Korisnik je uspesno kreiran!']);
     }
 
     /**
@@ -36,16 +51,55 @@ class KorisnikController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Korisnik $korisnik)
+    public function update(KorisnikValidationUpdateRequest $request, $id)
     {
-        //
+        $korisnik = Korisnik::findOrFail($id);
+
+        if ($request->uloga_id) {
+            $korisnik->uloga_id = $request->uloga_id;
+        }
+
+        if ($request->ime) {
+            $korisnik->ime = $request->ime;
+        }
+
+        if ($request->prezime) {
+            $korisnik->prezime = $request->prezime;
+        }
+
+        if ($request->password) {
+            $korisnik->password = Hash::make($request->password);
+        }
+        
+        $korisnik->save();
+
+        return response()->json(['poruka' => 'Korisnik je uspesno izmenjen!']);
+    }
+
+    public function promeniUlogu(Request $request, $korisnik_id)
+    {
+        $request->validate([
+            'uloga_id' => ['required', 'integer', new UlogaCheck]
+        ], [
+            'uloga_id.required' => 'Polje uloga_id je obavezno',
+            'uloga_id.integer' => 'Polje uloga_id mora biti broj'
+        ]);
+
+        $korisnik = Korisnik::findOrFail($korisnik_id);
+        $korisnik->uloga_id = $request->uloga_id;
+        $korisnik->save();
+
+        return response()->json(['poruka'=> 'Korisnicka uloga je uspesno izmenjena']);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Korisnik $korisnik)
+    public function destroy($id)
     {
-        //
+        $korisnik = Korisnik::findOrFail($id);
+        $korisnik->delete();
+
+        return response()->json(['poruka' => 'Korisnik je uspesno obrisan!']);
     }
 }

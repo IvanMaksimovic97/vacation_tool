@@ -17,3 +17,5 @@ Route::apiResources([
     'korisnik' =>  KorisnikController::class,
     'tim' => TimController::class
 ]);
+
+Route::post('/korisnik-promena-uloge/{korisnik_id}', [KorisnikController::class, 'promeniUlogu']);
