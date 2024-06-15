@@ -21,6 +21,11 @@ class Korisnik extends User
         return $this->belongsTo(Uloga::class);
     }
 
+    public function tim()
+    {
+        return $this->hasOne(TimKorisnik::class);
+    }
+
     protected function casts(): array
     {
         return [

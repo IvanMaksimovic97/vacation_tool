@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\ForceXmlHttpRequest;
+use App\Http\Middleware\KorisnikPripadaTimu;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
