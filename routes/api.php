@@ -9,22 +9,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/auth/login', [ApiAuthController::class, 'login']);
-Route::get('/auth/logout', [ApiAuthController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/auth/logout', [ApiAuthController::class, 'logout'])->middleware('auth:sanctum');
+    Route::get('/ulogovan-korisnik', fn (Request $request) => $request->user());
 
-
-Route::get('/ruta', [ApiController::class, 'index']);
-
-Route::apiResources([
-    'korisnik' =>  KorisnikController::class,
-    'tim' => TimController::class
-]);
-
-Route::post('/korisnik-promena-uloge/{korisnik_id}', [KorisnikController::class, 'promeniUlogu']);
-
-Route::post('/tim-korisnik/dodaj-korisnika', [TimKorisnikController::class, 'dodajKorisnikaUTim']);
-Route::delete('/tim-korisnik/obrisi-korisnika/{korisnik_id}', [TimKorisnikController::class, 'obrisiKorisnikaIzTima']);
-Route::post('/tim-korisnik/status-menadzera', [TimKorisnikController::class, 'postaviUkloniMenadzeraTima']);
+    Route::apiResources([
+        'korisnik' =>  KorisnikController::class,
+        'tim' => TimController::class
+    ]);
+    
+    Route::post('/korisnik-promena-uloge/{korisnik_id}', [KorisnikController::class, 'promeniUlogu']);
+    
+    Route::post('/tim-korisnik/dodaj-korisnika', [TimKorisnikController::class, 'dodajKorisnikaUTim']);
+    Route::delete('/tim-korisnik/obrisi-korisnika/{korisnik_id}', [TimKorisnikController::class, 'obrisiKorisnikaIzTima']);
+    Route::post('/tim-korisnik/status-menadzera', [TimKorisnikController::class, 'postaviUkloniMenadzeraTima']);
+});
