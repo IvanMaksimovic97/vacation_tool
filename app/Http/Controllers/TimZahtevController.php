@@ -34,13 +34,13 @@ class TimZahtevController extends Controller
 
         $korisnik = $request->user();
 
+        /**
+         * Izracunavanje koliko dana odmora ili slobodnih dana je potrebno korisniku da bi mogao da podnese zahtev
+         * Samo se radni dani uzimaju u obzir
+         */
         $brojRadnihDana = TimZahtev::brojRadnihDana($datumOd, $datumDo);
         
         if ($request->tip_zahteva_id == 1) {
-            if ($korisnik->broj_dana_godisnjeg_odmora == 0) {
-                return response()->json(['poruka' => 'Nemate raspolozive dane godisnjeg odmora!'], 422);
-            }
-
             if ($korisnik->broj_dana_godisnjeg_odmora < $brojRadnihDana) { 
                 return response()->json([
                     'poruka' => 'Nemate dovoljno raspolozivih dana godisnjeg odmora!',
@@ -51,10 +51,6 @@ class TimZahtevController extends Controller
         }
 
         if ($request->tip_zahteva_id == 2) {
-            if ($korisnik->broj_slobodnih_dana == 0) {
-                return response()->json(['poruka' => 'Nemate raspolozive slobodne dane!'], 422);
-            }
-
             if ($korisnik->broj_slobodnih_dana < $brojRadnihDana) { 
                 return response()->json([
                     'poruka' => 'Nemate dovoljno raspolozivih slobodnih dana!',
@@ -64,6 +60,9 @@ class TimZahtevController extends Controller
             }
         }
 
+        /**
+         * Kreiranje zahteva nakon uspesne validacije
+         */
         $noviZahtev = new TimZahtev;
         $noviZahtev->tim_korisnik_id = $korisnik->tim->id;
         $noviZahtev->tim_id = $korisnik->tim->tim_id;
@@ -85,8 +84,17 @@ class TimZahtevController extends Controller
         $zahteviUTimu = TimZahtev::join('korisnik', 'tim_zahtev.korisnik_id', '=', 'korisnik.id')
             ->join('uloga', 'korisnik.uloga_id', '=', 'uloga.id')
             ->join('tip_zahteva', 'tim_zahtev.tip_zahteva_id', '=', 'tip_zahteva.id')
-            ->where('tim_id', $korisnik->tim->tim_id)
-            ->whereIn('status', [0,1])
+            ->where('tim_id', $korisnik->tim->tim_id);
+            
+        /**
+         * Provera ako je uloga KORISNIK, vidi samo zahteve NA CEKANJU i ODOBRENE u timu
+         * Ako je menadzer ili administrator, vidi sve zahteve tima
+         */  
+        if ($korisnik->uloga_id == 3) {
+            $zahteviUTimu = $zahteviUTimu->whereIn('status', [0,1]);
+        }
+        
+        $zahteviUTimu = $zahteviUTimu
             ->select('tim_zahtev.*', 'tip_zahteva.naziv as vrsta_zahteva', 'korisnik.ime', 'korisnik.prezime', 'uloga.naziv as uloga')
             ->get();
 
@@ -135,7 +143,12 @@ class TimZahtevController extends Controller
             return response()->json(['poruka' => 'Na navedeni zahtev je vec odgovoreno!'], 422);
         }
 
+        /**
+         * Neophodna validacija pre nego sto se zahtev odobri ako se odobrava
+         */
         if ($request->status == 1) {
+
+            //Provera da li postoji ODOBREN zahtev u timu koji se preklapa sa periodom trenutnog zahteva koji se odobrava
             $poklapanjeDatuma = TimZahtev::where([
                 ['tim_id', '=',$zahtev->tim_id],
                 ['datum_od', '>=', $zahtev->datum_od],
@@ -147,6 +160,7 @@ class TimZahtevController extends Controller
                 return response()->json(['poruka' => 'Zahtev je odbijen! Zahtev ne moze biti odobren zbog poklapanja datuma sa vec drugim odobrenim zahtevom!'], 422);
             }
 
+            //Provera da li je korisniku ostalo dovoljno dana godisnjeg odmora ili slobodnih dana u zavisnosti od tipa zahteva
             $korisnik = Korisnik::find($zahtev->korisnik_id);
             
             if ($zahtev->tip_zahteva_id == 1) {

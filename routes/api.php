@@ -29,6 +29,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/tim-zahtev/kreiraj-zahtev', [TimZahtevController::class, 'kreiranjeZahteva'])->middleware(KorisnikPripadaTimu::class);
     Route::get('/tim-zahtev/pregled-zahteva', [TimZahtevController::class, 'pregledZahteva'])->middleware(KorisnikPripadaTimu::class);
-    Route::get('/tim-zahtev/pregled-sopstvenih-zahteva', [TimZahtevController::class, 'pregledSopstvenihZahteva']);
+    Route::get('/tim-zahtev/pregled-sopstvenih-zahteva', [TimZahtevController::class, 'pregledSopstvenihZahteva'])->middleware(KorisnikPripadaTimu::class);
     Route::post('/tim-zahtev/odgovor-na-zahtev/{zahtev_id}', [TimZahtevController::class, 'odgovorNaZahtev']);
 });
