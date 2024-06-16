@@ -35,13 +35,16 @@ class Zahtev extends Model
         ];
     }
 
-    public static function brojPreklapajucihZahtevaKreiranje($korisnik_id, $datum_od, $datum_do)
+    public static function brojPreklapajucihZahtevaKreiranje($tim_id, $datum_od, $datum_do)
     {
-        return self::where([
-            ['korisnik_id', '=', $korisnik_id],
-            ['datum_do', '>=', $datum_od],
-            ['datum_od', '<=', $datum_do]
-        ])->count();
+        return self::join('korisnik', 'zahtev.korisnik_id', '=', 'korisnik.id')
+            ->where('korisnik.tim_id', '=', $tim_id)
+            ->where('zahtev.datum_do', '>=', $datum_od)
+            ->where('zahtev.datum_od', '<=', $datum_do)
+            ->where(function ($query) { 
+                $query->where('status', 0)->orWhere('status', 1);
+            })
+            ->count();
     }
 
     public static function brojPreklapajucihZahtevaOdobrenje($tim_id, $datum_od, $datum_do)

@@ -30,9 +30,9 @@ class ZahtevController extends Controller
         $korisnik = $request->user();
 
         /**
-         * Korisnik ne moze kreirati novi zahtev ako je vec kreirao zahtev u kojem dolazi do preklapanja perioda
+         * Korisnik ne moze kreirati novi zahtev ako je vec neko iz tima kreirao zahtev u kojem dolazi do preklapanja perioda, ako je status zahteva NA CEKANJU ili ODOBREN
          */
-        if (Zahtev::brojPreklapajucihZahtevaKreiranje($korisnik->id, $datumOd, $datumDo) > 0) {
+        if (Zahtev::brojPreklapajucihZahtevaKreiranje($korisnik->tim_id, $datumOd, $datumDo) > 0) {
             return response()->json(['poruka' => 'Zahtev u navedenom periodu je vec kreiran!'], 422);
         }
 
