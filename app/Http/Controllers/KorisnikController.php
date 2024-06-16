@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\KorisnikPromenaTimaRequest;
+use App\Http\Requests\KorisnikPromenaUlogeRequest;
 use App\Http\Requests\KorisnikValidationStoreRequest;
 use App\Http\Requests\KorisnikValidationUpdateRequest;
 use App\Models\Korisnik;
@@ -82,15 +84,8 @@ class KorisnikController extends Controller
         return response()->json(['poruka' => 'Korisnik je uspesno izmenjen!']);
     }
 
-    public function promeniUlogu(Request $request, $korisnik_id)
+    public function promeniUlogu(KorisnikPromenaUlogeRequest $request, $korisnik_id)
     {
-        $request->validate([
-            'uloga_id' => ['required', 'integer', new UlogaCheck]
-        ], [
-            'uloga_id.required' => 'Polje uloga_id je obavezno',
-            'uloga_id.integer' => 'Polje uloga_id mora biti broj'
-        ]);
-
         $korisnik = Korisnik::findOrFail($korisnik_id);
         $korisnik->uloga_id = $request->uloga_id;
         $korisnik->save();
@@ -98,15 +93,8 @@ class KorisnikController extends Controller
         return response()->json(['poruka'=> 'Korisnicka uloga je uspesno izmenjena']);
     }
 
-    public function promeniTim(Request $request, $korisnik_id)
+    public function promeniTim(KorisnikPromenaTimaRequest $request, $korisnik_id)
     {
-        $request->validate([
-            'tim_id' => ['required', 'integer', new CheckTim]
-        ], [
-            'tim_id.required' => 'Polje tim_id je obavezno',
-            'tim_id.integer' => 'Polje tim_id mora biti broj'
-        ]);
-
         $korisnik = Korisnik::findOrFail($korisnik_id);
         $korisnik->tim_id = $request->tim_id;
         $korisnik->save();

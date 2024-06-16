@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginValidationRequest;
 use App\Models\Korisnik;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,17 +11,8 @@ use Illuminate\Support\Facades\Hash;
 
 class ApiAuthController extends Controller
 {
-    public function login(Request $request)
+    public function login(LoginValidationRequest $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ], [
-            'email.required' => 'Polje email je obavezno',
-            'email.email' => 'Email nije u ispravnom formatu',
-            'password.required' => 'Polje password je obavezno'
-        ]);
-
         $korisnik = Korisnik::where('email', $request->email)->first();
 
         if ($korisnik && Hash::check($request->password, $korisnik->password)) {
