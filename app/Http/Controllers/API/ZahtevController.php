@@ -94,7 +94,9 @@ class ZahtevController extends Controller
          * Ako je menadzer, vidi sve zahteve tima
          */  
         if ($korisnik->uloga_id != 2) {
-            $zahteviUTimu = $zahteviUTimu->whereIn('status', [0,1]);
+            $zahteviUTimu = $zahteviUTimu->where(function ($query) { 
+                $query->where('zahtev.status', 0)->orWhere('zahtev.status', 1);
+            });
         }
         
         $zahteviUTimu = $zahteviUTimu

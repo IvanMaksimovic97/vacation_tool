@@ -42,7 +42,7 @@ class Zahtev extends Model
             ->where('zahtev.datum_do', '>=', $datum_od)
             ->where('zahtev.datum_od', '<=', $datum_do)
             ->where(function ($query) { 
-                $query->where('status', 0)->orWhere('status', 1);
+                $query->where('zahtev.status', 0)->orWhere('zahtev.status', 1);
             })
             ->count();
     }
