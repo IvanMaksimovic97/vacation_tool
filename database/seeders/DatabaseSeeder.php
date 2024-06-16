@@ -22,9 +22,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             UlogaSeeder::class,
+            TimSeeder::class,
             TipZahtevaSeeder::class,
-            KorisnikSeeder::class,
-            TimSeeder::class
+            KorisnikSeeder::class
         ]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\CheckTim;
 use App\Rules\EmailCheck;
 use App\Rules\UlogaCheck;
 use Illuminate\Foundation\Http\FormRequest;
@@ -24,6 +25,7 @@ class KorisnikValidationStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'tim_id' => ['integer', new CheckTim],
             'uloga_id' => ['required', 'integer', new UlogaCheck],
             'ime' => 'required',
             'prezime' => 'required',

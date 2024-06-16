@@ -5,26 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 use function PHPUnit\Framework\returnSelf;
 
-class TimZahtev extends Model
+class Zahtev extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'tim_zahtev';
+    protected $table = 'zahtev';
     protected $guarded = [];
     public $timestamps = true;
-
-    public function timKorisnik()
-    {
-        return $this->belongsTo(TimKorisnik::class);
-    }
-
-    public function tim()
-    {
-        return $this->belongsTo(Tim::class);
-    }
 
     public function korisnik()
     {
@@ -42,6 +33,26 @@ class TimZahtev extends Model
             'created_at' => 'datetime:d.m.Y H:i:s',
             'updated_at' => 'datetime:d.m.Y H:i:s',
         ];
+    }
+
+    public static function brojPreklapajucihZahtevaKreiranje($korisnik_id, $datum_od, $datum_do)
+    {
+        return self::where([
+            ['korisnik_id', '=', $korisnik_id],
+            ['datum_do', '>=', $datum_od],
+            ['datum_od', '<=', $datum_do]
+        ])->count();
+    }
+
+    public static function brojPreklapajucihZahtevaOdobrenje($tim_id, $datum_od, $datum_do)
+    {
+        return self::join('korisnik', 'zahtev.korisnik_id', '=', 'korisnik.id')
+            ->where([
+                ['korisnik.tim_id', '=', $tim_id],
+                ['zahtev.datum_do', '>=', $datum_od],
+                ['zahtev.datum_od', '<=', $datum_do],
+                ['zahtev.status', '=', 1]
+            ])->count();
     }
 
     public static function brojRadnihDana($pocetniDatum, $krajnjiDatum) 

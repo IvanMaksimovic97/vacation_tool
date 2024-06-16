@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Korisnik;
+use App\Models\Tim;
 use App\Models\Uloga;
 use Carbon\Carbon;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -17,9 +18,11 @@ class KorisnikSeeder extends Seeder
     public function run(): void
     {
         $ulogeIds = Uloga::all()->pluck("id")->toArray();
+        $timoviIds = Tim::all()->pluck("id")->toArray();
 
         foreach (range(1, 20) as $index) {
             $noviKorisnik = new Korisnik;
+            $noviKorisnik->tim_id = fake()->randomElement($timoviIds);
             $noviKorisnik->uloga_id = fake()->randomElement($ulogeIds);
             $noviKorisnik->ime = fake()->firstName;
             $noviKorisnik->prezime = fake()->lastName;

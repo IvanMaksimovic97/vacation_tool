@@ -16,7 +16,7 @@ class Tim extends Model
 
     public function korisnici()
     {
-        return $this->hasMany(TimKorisnik::class);
+        return $this->hasMany(Korisnik::class);
     }
 
     protected function casts(): array

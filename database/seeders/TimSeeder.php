@@ -16,7 +16,7 @@ class TimSeeder extends Seeder
     {
         foreach (range(1, 20) as $index) {
             $noviTim = new Tim;
-            $noviTim->naziv = fake()->company;
+            $noviTim->naziv = 'Tim '.$index;
             $noviTim->opis = fake()->text(100);
             $noviTim->created_at = Carbon::now();
             $noviTim->save();

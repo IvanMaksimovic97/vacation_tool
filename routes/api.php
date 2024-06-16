@@ -6,29 +6,34 @@ use App\Http\Controllers\KorisnikController;
 use App\Http\Controllers\TimController;
 use App\Http\Controllers\TimKorisnikController;
 use App\Http\Controllers\TimZahtevController;
+use App\Http\Middleware\AdministratorPristup;
 use App\Http\Middleware\KorisnikPripadaTimu;
+use App\Http\Middleware\MenadzerPristup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/auth/login', [ApiAuthController::class, 'login']);
+Route::post('/login', [ApiAuthController::class, 'login']);
 
+//Rute kojima je moguce pristupiti samo ukoliko ste ulogovani na aplikaciju
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/auth/logout', [ApiAuthController::class, 'logout']);
+    Route::get('/logout', [ApiAuthController::class, 'logout']);
     Route::get('/ulogovan-korisnik', fn (Request $request) => $request->user());
 
-    Route::apiResources([
-        'korisnik' =>  KorisnikController::class,
-        'tim' => TimController::class
-    ]);
-    
-    Route::post('/korisnik-promena-uloge/{korisnik_id}', [KorisnikController::class, 'promeniUlogu']);
-    
-    Route::post('/tim-korisnik/dodaj-korisnika', [TimKorisnikController::class, 'dodajKorisnikaUTim']);
-    Route::delete('/tim-korisnik/obrisi-korisnika/{korisnik_id}', [TimKorisnikController::class, 'obrisiKorisnikaIzTima']);
-    Route::post('/tim-korisnik/status-menadzera', [TimKorisnikController::class, 'postaviUkloniMenadzeraTima']);
+    //Rute za ulogu ADMINISTRATOR
+    Route::middleware(AdministratorPristup::class)->group(function () { 
+        Route::apiResources([
+            'korisnik' =>  KorisnikController::class,
+            'tim' => TimController::class
+        ]);
 
-    Route::post('/tim-zahtev/kreiraj-zahtev', [TimZahtevController::class, 'kreiranjeZahteva'])->middleware(KorisnikPripadaTimu::class);
-    Route::get('/tim-zahtev/pregled-zahteva', [TimZahtevController::class, 'pregledZahteva'])->middleware(KorisnikPripadaTimu::class);
-    Route::get('/tim-zahtev/pregled-sopstvenih-zahteva', [TimZahtevController::class, 'pregledSopstvenihZahteva'])->middleware(KorisnikPripadaTimu::class);
-    Route::post('/tim-zahtev/odgovor-na-zahtev/{zahtev_id}', [TimZahtevController::class, 'odgovorNaZahtev']);
+        Route::post('/korisnik-promena-uloge/{korisnik_id}', [KorisnikController::class, 'promeniUlogu']);
+        Route::post('/korisnik-promena-tima/{korisnik_id}', [KorisnikController::class, 'promeniTim']);
+    });
+
+    Route::get('/korisnik-pregled-tima', [KorisnikController::class, 'pregledTima'])->middleware(MenadzerPristup::class);
+    
+    Route::post('/zahtev/kreiraj-zahtev', [TimZahtevController::class, 'kreiranjeZahteva'])->middleware(KorisnikPripadaTimu::class);
+    Route::get('/zahtev/pregled-zahteva', [TimZahtevController::class, 'pregledZahteva'])->middleware(KorisnikPripadaTimu::class);
+    Route::get('/zahtev/pregled-sopstvenih-zahteva', [TimZahtevController::class, 'pregledSopstvenihZahteva'])->middleware(KorisnikPripadaTimu::class);
+    Route::post('/zahtev/odgovor-na-zahtev/{zahtev_id}', [TimZahtevController::class, 'odgovorNaZahtev']);
 });

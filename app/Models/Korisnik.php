@@ -23,7 +23,12 @@ class Korisnik extends User
 
     public function tim()
     {
-        return $this->hasOne(TimKorisnik::class);
+        return $this->belongsTo(Tim::class);
+    }
+
+    public function zahtevi()
+    {
+        return $this->hasMany(Zahtev::class);
     }
 
     protected function casts(): array
