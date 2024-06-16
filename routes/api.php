@@ -15,9 +15,6 @@ Route::post('/login', [ApiAuthController::class, 'login']);
  * Rute kojima je moguce pristupiti samo ukoliko ste ulogovani na aplikaciju
  */
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/logout', [ApiAuthController::class, 'logout']);
-    Route::get('/ulogovan-korisnik', [ApiAuthController::class, 'ulogovanKorisnik']);
-
     /**
      * Rute za ulogu ADMINISTRATOR
      */
@@ -31,11 +28,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/korisnik-promena-tima/{korisnik_id}', [KorisnikController::class, 'promeniTim']);
     });
 
-    Route::get('/korisnik-pregled-tima', [KorisnikController::class, 'pregledTima'])->middleware(MenadzerPristup::class);
-    
-    Route::post('/zahtev/kreiraj-zahtev', [ZahtevController::class, 'kreiranjeZahteva'])->middleware(KorisnikPripadaTimu::class);
-    Route::get('/zahtev/pregled-zahteva', [ZahtevController::class, 'pregledZahteva'])->middleware(KorisnikPripadaTimu::class);
-    Route::get('/zahtev/pregled-sopstvenih-zahteva', [ZahtevController::class, 'pregledSopstvenihZahteva'])->middleware(KorisnikPripadaTimu::class);
+    /**
+     * Rute za ulogu MENADZER
+     */
+    Route::middleware(MenadzerPristup::class)->group(function () {
+        Route::get('/korisnik-pregled-tima', [KorisnikController::class, 'pregledTima']);
+        Route::post('/zahtev/odgovor-na-zahtev/{zahtev_id}', [ZahtevController::class, 'odgovorNaZahtev']);
+    });
 
-    Route::post('/zahtev/odgovor-na-zahtev/{zahtev_id}', [ZahtevController::class, 'odgovorNaZahtev'])->middleware(MenadzerPristup::class);
+    Route::middleware(KorisnikPripadaTimu::class)->group(function () {
+        Route::post('/zahtev/kreiraj-zahtev', [ZahtevController::class, 'kreiranjeZahteva']);
+        Route::get('/zahtev/pregled-zahteva', [ZahtevController::class, 'pregledZahteva']);
+        Route::get('/zahtev/pregled-sopstvenih-zahteva', [ZahtevController::class, 'pregledSopstvenihZahteva']);
+    });
+
+    Route::get('/ulogovan-korisnik', [ApiAuthController::class, 'ulogovanKorisnik']);
+    Route::get('/logout', [ApiAuthController::class, 'logout']);
 });
