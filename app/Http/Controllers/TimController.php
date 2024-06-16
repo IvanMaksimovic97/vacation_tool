@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TimValidationStoreRequest;
 use App\Models\Tim;
 use Illuminate\Http\Request;
 
@@ -20,14 +21,8 @@ class TimController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(TimValidationStoreRequest $request)
     {
-        $request->validate([
-            'naziv' => 'required',
-        ], [
-            'naziv.required' => 'Polje naziv je obavezno'
-        ]);
-
         $tim = new Tim;
         $tim->naziv = $request->naziv;
         $tim->opis = $request->opis ?? '';
