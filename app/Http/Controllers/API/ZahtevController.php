@@ -212,4 +212,26 @@ class ZahtevController extends Controller
             return response()->json(['poruka' => 'Zahtev je uspesno odbijen!']);
         }
     }
+
+    public function otkazivanjeZahteva(Request $request, $zahtev_id)
+    {
+        /**
+         * Ulogovan korisnik
+         */
+        $ulogovanKorisnik = $request->user();
+
+        $zahtev = Zahtev::findOrFail($zahtev_id);
+
+        if ($zahtev->korisnik_id != $ulogovanKorisnik->id) {
+            return response()->json(['poruka' => 'Mozete otkazati samo sopstveni zahtev'], 422);
+        }
+
+        if ($zahtev->status != 0) {
+            return response()->json(['poruka' => 'Moguce je otkazivanje samo zahteva koji su NA CEKANJU!'], 422);
+        }
+
+        $zahtev->delete();
+
+        return response()->json(['poruka' => 'Zahtev je uspesno otkazan!']);
+    }
 }

@@ -40,6 +40,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/zahtev/kreiraj-zahtev', [ZahtevController::class, 'kreiranjeZahteva']);
         Route::get('/zahtev/pregled-zahteva', [ZahtevController::class, 'pregledZahteva']);
         Route::get('/zahtev/pregled-sopstvenih-zahteva', [ZahtevController::class, 'pregledSopstvenihZahteva']);
+        Route::get('/zahtev/otkazi-zahtev/{zahtev_id}', [ZahtevController::class, 'otkazivanjeZahteva']);
     });
 
     Route::get('/ulogovan-korisnik', [ApiAuthController::class, 'ulogovanKorisnik']);
