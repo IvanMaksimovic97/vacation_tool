@@ -17,9 +17,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        /**
+         * Middleware koji sluzi da svaki request tumaci kao API request
+         */
         $middleware->append(ForceXmlHttpRequest::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
+        /**
+         * Custom handle-ovanje not found izuzetka
+         */
         $exceptions->render(function (NotFoundHttpException $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json([
@@ -28,6 +34,9 @@ return Application::configure(basePath: dirname(__DIR__))
             }
         });
 
+        /**
+         * Custom handle-ovanje method not allowed izuzetka
+         */
         $exceptions->render(function (MethodNotAllowedHttpException $e, Request $request) {
             return response()->json(['poruka' => $e->getMessage()], 405);
         });

@@ -11,12 +11,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [ApiAuthController::class, 'login']);
 
-//Rute kojima je moguce pristupiti samo ukoliko ste ulogovani na aplikaciju
+/**
+ * Rute kojima je moguce pristupiti samo ukoliko ste ulogovani na aplikaciju
+ */
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/logout', [ApiAuthController::class, 'logout']);
     Route::get('/ulogovan-korisnik', [ApiAuthController::class, 'ulogovanKorisnik']);
 
-    //Rute za ulogu ADMINISTRATOR
+    /**
+     * Rute za ulogu ADMINISTRATOR
+     */
     Route::middleware(AdministratorPristup::class)->group(function () { 
         Route::apiResources([
             'korisnik' =>  KorisnikController::class,
