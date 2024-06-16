@@ -104,6 +104,9 @@ class KorisnikController extends Controller
 
     public function pregledTima(Request $request)
     {
+        /**
+         * Ulogovan korisnik
+         */
         $korisnik = $request->user();
 
         $korisnici = Korisnik::with(['uloga'])->where('tim_id', $korisnik->tim_id)->get();

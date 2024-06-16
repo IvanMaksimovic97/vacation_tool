@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ZahtevKreiranjeRequest;
+use App\Http\Requests\ZahtevOdgovorRequest;
 use App\Models\Korisnik;
 use App\Models\TipZahteva;
 use App\Models\Zahtev;
@@ -9,23 +11,10 @@ use App\Rules\CheckTipZahteva;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class TimZahtevController extends Controller
+class ZahtevController extends Controller
 {
-    public function kreiranjeZahteva(Request $request)
+    public function kreiranjeZahteva(ZahtevKreiranjeRequest $request)
     {
-        $request->validate([
-            'tip_zahteva_id' => ['required', 'integer', new CheckTipZahteva],
-            'datum_od' => ['required', 'date_format:Y-m-d'],
-            'datum_do' => ['required', 'date_format:Y-m-d']
-        ], [
-            'tip_zahteva_id.required' => 'Polje tip_zahteva_id je obavezno',
-            'tip_zahteva_id.integer' => 'polje tip_zahteva_id mora biti broj',
-            'datum_od.required' => 'Polje datum_od je obavezno',
-            'datum_od.date_format' => 'Polje datum_od mora biti u formatu YYYY-mm-dd',
-            'datum_do.required' => 'Polje datum_do je obavezno',
-            'datum_do.date_format' => 'Polje datum_do mora biti u formatu YYYY-mm-dd',
-        ]);
-
         $datumOd = $request->datum_od;
         $datumDo = $request->datum_do;
 
@@ -37,6 +26,9 @@ class TimZahtevController extends Controller
             return response()->json(['poruka' => 'Pocetni datum ne sme biti veci od krajnjeg datuma!'], 422);
         }
 
+        /**
+         * Ulogovan korisnik
+         */
         $korisnik = $request->user();
 
         /**
@@ -89,6 +81,9 @@ class TimZahtevController extends Controller
 
     public function pregledZahteva(Request $request)
     {
+        /**
+         * Ulogovan korisnik
+         */
         $korisnik = $request->user();
 
         $zahteviUTimu = Zahtev::join('korisnik', 'zahtev.korisnik_id', '=', 'korisnik.id')
@@ -121,6 +116,9 @@ class TimZahtevController extends Controller
 
     public function pregledSopstvenihZahteva(Request $request)
     {
+        /**
+         * Ulogovan korisnik
+         */
         $korisnik = $request->user();
 
         $zahteviUTimu = Zahtev::with(['tipZahteva'])->where('korisnik_id', $korisnik->id)->get();
@@ -136,18 +134,13 @@ class TimZahtevController extends Controller
         return response()->json($zahteviUTimu);
     }
 
-    public function odgovorNaZahtev(Request $request, $zahtev_id)
+    public function odgovorNaZahtev(ZahtevOdgovorRequest $request, $zahtev_id)
     {
-        $request->validate([
-            'status' => ['required', 'integer', 'min:1', 'max:2']
-        ], [
-            'status.required' => 'Polje status je obavezno',
-            'status.integer' => 'Polje status moze imati vrednosti 1 (prihvacen) ili 2 (odbijen)',
-            'status.min' => 'Polje status moze imati vrednosti 1 (prihvacen) ili 2 (odbijen)',
-            'status.max' => 'Polje status moze imati vrednosti 1 (prihvacen) ili 2 (odbijen)',
-        ]);
-
+        /**
+         * Ulogovan korisnik
+         */
         $ulogovanKorisnik = $request->user();
+
         $zahtev = Zahtev::findOrFail($zahtev_id);
 
         /**

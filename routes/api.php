@@ -1,15 +1,12 @@
 <?php
 
 use App\Http\Controllers\API\ApiAuthController;
-use App\Http\Controllers\API\ApiController;
 use App\Http\Controllers\KorisnikController;
 use App\Http\Controllers\TimController;
-use App\Http\Controllers\TimKorisnikController;
-use App\Http\Controllers\TimZahtevController;
+use App\Http\Controllers\ZahtevController;
 use App\Http\Middleware\AdministratorPristup;
 use App\Http\Middleware\KorisnikPripadaTimu;
 use App\Http\Middleware\MenadzerPristup;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [ApiAuthController::class, 'login']);
@@ -32,9 +29,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/korisnik-pregled-tima', [KorisnikController::class, 'pregledTima'])->middleware(MenadzerPristup::class);
     
-    Route::post('/zahtev/kreiraj-zahtev', [TimZahtevController::class, 'kreiranjeZahteva'])->middleware(KorisnikPripadaTimu::class);
-    Route::get('/zahtev/pregled-zahteva', [TimZahtevController::class, 'pregledZahteva'])->middleware(KorisnikPripadaTimu::class);
-    Route::get('/zahtev/pregled-sopstvenih-zahteva', [TimZahtevController::class, 'pregledSopstvenihZahteva'])->middleware(KorisnikPripadaTimu::class);
+    Route::post('/zahtev/kreiraj-zahtev', [ZahtevController::class, 'kreiranjeZahteva'])->middleware(KorisnikPripadaTimu::class);
+    Route::get('/zahtev/pregled-zahteva', [ZahtevController::class, 'pregledZahteva'])->middleware(KorisnikPripadaTimu::class);
+    Route::get('/zahtev/pregled-sopstvenih-zahteva', [ZahtevController::class, 'pregledSopstvenihZahteva'])->middleware(KorisnikPripadaTimu::class);
 
-    Route::post('/zahtev/odgovor-na-zahtev/{zahtev_id}', [TimZahtevController::class, 'odgovorNaZahtev'])->middleware(MenadzerPristup::class);
+    Route::post('/zahtev/odgovor-na-zahtev/{zahtev_id}', [ZahtevController::class, 'odgovorNaZahtev'])->middleware(MenadzerPristup::class);
 });
