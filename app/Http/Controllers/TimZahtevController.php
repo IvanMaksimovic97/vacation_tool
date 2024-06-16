@@ -147,7 +147,15 @@ class TimZahtevController extends Controller
             'status.max' => 'Polje status moze imati vrednosti 1 (prihvacen) ili 2 (odbijen)',
         ]);
 
+        $ulogovanKorisnik = $request->user();
         $zahtev = Zahtev::findOrFail($zahtev_id);
+
+        /**
+         * Sprecavnje odgovora ukoliko je korisnik menadzer drugog tima
+         */
+        if ($ulogovanKorisnik->tim_id != $zahtev->korisnik->tim_id) {
+            return response()->json(['poruka' => 'Niste menadzer navedenog tima!'], 422);
+        }
 
         if ($zahtev->status != 0) {
             return response()->json(['poruka' => 'Na navedeni zahtev je vec odgovoreno!'], 422);

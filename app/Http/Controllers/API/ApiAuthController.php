@@ -44,4 +44,14 @@ class ApiAuthController extends Controller
             "poruka"=>"Uspešna odjava sa aplikacije!"
         ]);
     }
+
+    public function ulogovanKorisnik(Request $request)
+    {
+        $korisnik = $request->user();
+
+        $korisnik->uloga = $korisnik->uloga->naziv;
+        $korisnik->tim = $korisnik->tim->naziv;
+
+        return $korisnik;
+    }
 }

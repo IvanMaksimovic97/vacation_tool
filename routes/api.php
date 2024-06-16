@@ -17,7 +17,7 @@ Route::post('/login', [ApiAuthController::class, 'login']);
 //Rute kojima je moguce pristupiti samo ukoliko ste ulogovani na aplikaciju
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/logout', [ApiAuthController::class, 'logout']);
-    Route::get('/ulogovan-korisnik', fn (Request $request) => $request->user());
+    Route::get('/ulogovan-korisnik', [ApiAuthController::class, 'ulogovanKorisnik']);
 
     //Rute za ulogu ADMINISTRATOR
     Route::middleware(AdministratorPristup::class)->group(function () { 
@@ -35,5 +35,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/zahtev/kreiraj-zahtev', [TimZahtevController::class, 'kreiranjeZahteva'])->middleware(KorisnikPripadaTimu::class);
     Route::get('/zahtev/pregled-zahteva', [TimZahtevController::class, 'pregledZahteva'])->middleware(KorisnikPripadaTimu::class);
     Route::get('/zahtev/pregled-sopstvenih-zahteva', [TimZahtevController::class, 'pregledSopstvenihZahteva'])->middleware(KorisnikPripadaTimu::class);
-    Route::post('/zahtev/odgovor-na-zahtev/{zahtev_id}', [TimZahtevController::class, 'odgovorNaZahtev']);
+
+    Route::post('/zahtev/odgovor-na-zahtev/{zahtev_id}', [TimZahtevController::class, 'odgovorNaZahtev'])->middleware(MenadzerPristup::class);
 });
