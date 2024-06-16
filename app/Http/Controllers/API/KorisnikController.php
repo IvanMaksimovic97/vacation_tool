@@ -1,17 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Http\Requests\KorisnikPromenaTimaRequest;
 use App\Http\Requests\KorisnikPromenaUlogeRequest;
 use App\Http\Requests\KorisnikValidationStoreRequest;
 use App\Http\Requests\KorisnikValidationUpdateRequest;
 use App\Models\Korisnik;
-use App\Rules\CheckTim;
-use App\Rules\EmailCheck;
-use App\Rules\UlogaCheck;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Controller;
 
 class KorisnikController extends Controller
 {

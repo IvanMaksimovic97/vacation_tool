@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\API\ApiAuthController;
-use App\Http\Controllers\KorisnikController;
-use App\Http\Controllers\TimController;
-use App\Http\Controllers\ZahtevController;
+use App\Http\Controllers\API\KorisnikController;
+use App\Http\Controllers\API\TimController;
+use App\Http\Controllers\API\ZahtevController;
 use App\Http\Middleware\AdministratorPristup;
 use App\Http\Middleware\KorisnikPripadaTimu;
 use App\Http\Middleware\MenadzerPristup;

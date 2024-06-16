@@ -1,15 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Http\Requests\ZahtevKreiranjeRequest;
 use App\Http\Requests\ZahtevOdgovorRequest;
 use App\Models\Korisnik;
-use App\Models\TipZahteva;
 use App\Models\Zahtev;
-use App\Rules\CheckTipZahteva;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class ZahtevController extends Controller
 {

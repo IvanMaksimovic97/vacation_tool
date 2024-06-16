@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Http\Requests\TimValidationStoreRequest;
 use App\Models\Tim;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class TimController extends Controller
 {
