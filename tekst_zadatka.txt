@@ -1,0 +1,21 @@
+Aplikacija za vođenje godišnjih odmora
+
+Aplikacija za vođenje evidencije godišnjih odmora.
+Potrebno je napraviti logovanje na aplikaciju.  (front end ne treba)
+Svaki korisnik ima 20 dana godišnjeg odmora na raspolaganju i 5 slobodnih dana.
+Korisnici su raspoređeni po timovima.
+Svaki tim ima barem jednog menadžera.
+Korisnik kreira zahtev za odmor. Tako kreiran zahtev ima status "na čekanju". Menadžer iz istog tima ima pregled svih zahteva iz tima i zahteve sa statusom "na čekanju" može da odobri ili odbije.
+Tada se menja status u "odobreno" odnosno ako ne odobri status se menja u "odbijeno".
+Korisnik ima pregled svih zahteva sa statusom "na čekanju" kao i "odobreno" i ne može kreirati novi zahtev sa tim datumima. Zahteve sa statusom "na čekanju" može da otkaže.
+Tipovi korisnika:
+	-Administrator
+	-Menadzer
+	-Korisnik
+Uloge:
+	-Administrator: Kreira, menja, briše korisnike i dodeljuje uloge korisnika aplikacije. Kreira timove i dodeljuje korisnike timovima. Obeležava menadžera tima.
+	-Menadzer: Odgovara na zahteve korisnika za odmor unutar tima. Datumi odmora unutar tima ne smeju da se poklapaju. Ima pregled samo svog tima.
+	-Korisnik: Šalje zatev za odmor i može da vidi unutar tima sve koji su kreirali zahtev i čekaju da se odobri kao i sve zateve koji su sa statusom "odobren" ili "na čekanju". Vidi istoriju svojih zahteva i koliko mu je dana odmora i slobodnih dana preostalo.
+
+Za izradu aplikacije koristiti Laravel framework kao i MySQL bazu. 
+Potrebno je uraditi samo backend deo tako da preko API-ja može komunicirati sa frontend delom koji može biti i na nekom drugom, udaljenom serveru.

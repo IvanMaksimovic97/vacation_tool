@@ -1,0 +1,55 @@
+Minimalna PHP verzija: 8.2
+Laravel verzija: 11
+
+Dump baze se nalazi u glavnom folderu --> dump_baze.sql
+
+U glavnom folderu pokrenuti komadnu kroz terminal:
+composer install
+
+Sadrzaj iz fajla .env.example prebaciti u fajl .env i promeniti parametre za konekciju sa bazom po potrebi
+
+Komanda za pokretanje projekta:
+php artisan serve (URL aplikacije je http://127.0.0.1:8000)
+___________________________________________________________________________________________________________________
+
+API rute aplikacije:
+POST /api/login
+
+GET /api/logout
+GET /api/ulogovan-korisnik
+POST /api/korisnik-promena-uloge/{korisnik_id}
+POST /api/korisnik-promena-tima/{korisnik_id}
+GET /api/korisnik-pregled-tima
+POST /api/zahtev/odgovor-na-zahtev/{zahtev_id}
+POST /api/zahtev/kreiraj-zahtev
+GET /api/zahtev/pregled-zahteva
+GET /api/zahtev/pregled-sopstvenih-zahteva
+GET /api/zahtev/otkazi-zahtev/{zahtev_id}
+
+GET /api/korisnik
+POST /api/korisnik
+PUT /api/korisnik/{korisnik_id}
+DELETE /api/korisnik/{korisnik_id}
+
+GET /api/tim
+POST /api/tim
+PUT /api/tim/{tim_id}
+DELETE /api/tim/{tim_id}
+
+Logovanje na aplikacju:
+Salje se HTTP zahtev na rutu /api/login sa korisnickim podacima.
+Ukoliko je uspesno logovanje, generise se token koji potrebno ubaciti u header svakog narednog HTTP zahteva (Bearer <token>)
+Generisani tokeni se cuvaju u tabeli personal_access_tokens
+
+Tabele koje se koriste za resenje navedenog zadatka:
+- korisnik
+- uloga
+- tim
+- zahtev
+- tip_zahteva
+- migrations
+- personal_access_tokens
+
+Ostale tabele u bazi u automatski kreirane od strane Laravel frameworka
+
+Svi korisnici iz tabele "korisnik" imaju istu lozinku "test" radi lakseg testiranja

@@ -36,6 +36,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/zahtev/odgovor-na-zahtev/{zahtev_id}', [ZahtevController::class, 'odgovorNaZahtev']);
     });
 
+    /**
+     * Rute kojima moze pristupiti samo korisnik ukoliko je dodeljen timu
+     */
     Route::middleware(KorisnikPripadaTimu::class)->group(function () {
         Route::post('/zahtev/kreiraj-zahtev', [ZahtevController::class, 'kreiranjeZahteva']);
         Route::get('/zahtev/pregled-zahteva', [ZahtevController::class, 'pregledZahteva']);
@@ -43,6 +46,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/zahtev/otkazi-zahtev/{zahtev_id}', [ZahtevController::class, 'otkazivanjeZahteva']);
     });
 
+    /**
+     * Ostale rute
+     */
     Route::get('/ulogovan-korisnik', [ApiAuthController::class, 'ulogovanKorisnik']);
     Route::get('/logout', [ApiAuthController::class, 'logout']);
 });
